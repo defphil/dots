@@ -1,0 +1,6 @@
+xterm*background: black
+xterm*foreground: lightgray
+xterm*cursorColor: #ff0066
+xterm*faceName: ctrlD
+xterm*faceSize: 12
+xterm*geometry: 120x55
