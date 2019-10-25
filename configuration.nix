@@ -84,10 +84,14 @@
     extra-cmake-modules 
     weechat
     cmake
-		i3
-		i3status-rust
-		dbus
-		mc
+    dbus
+    sway
+    swaylock
+    swayidle
+    wl-clipboard
+    light
+    bemenu
+    i3status-rust
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -107,25 +111,27 @@
   # Enable sound.
   sound.enable = true;
   hardware.pulseaudio.enable = true;
-
-  services.xserver = {
-    enable = true;
-    autorun = false;
-    layout = "us";
-    xkbOptions = "ctrl:nocaps";
-    libinput.enable = true;
-		displayManager.lightdm.enable = true;
-		windowManager.i3.enable = true;	
-  };
+# 
+   services.xserver = {
+     enable = true;
+     autorun = false;
+     layout = "us";
+     xkbOptions = "ctrl:nocaps";
+     libinput.enable = true;
+ 		# displayManager.lightdm.enable = true;
+ 		# windowManager.i3.enable = true;	
+     # displayManager.extraSessionFilePackages = [ sway ];
+   };
 	
-	services.compton = {
-		enable = true;
-	backend = "glx";
-		shadow = false;
-    fade = false;
-		vSync = true;
-		
-	};
+# 	services.compton = {
+# 		enable = true;
+# 	backend = "glx";
+# 		shadow = false;
+#     fade = false;
+# 		vSync = true;
+# 		
+# 	};
+programs.sway.enable = true;
 
   users = {     defaultUserShell = pkgs.zsh;  };
   users.users.phil = {
