@@ -57,10 +57,6 @@
     gdb
     fzf
     htop
-    screenfetch
-    redshift
-    rustc
-    cargo
     p7zip
     unrar
     unzip
@@ -69,29 +65,21 @@
     xdg-user-dirs
     zip
     emacs
+    tdesktop
     tmux
     firefox
     git
     ripgrep
     networkmanagerapplet
     nix-prefetch-scripts
-    tdesktop
     gnumake
     gnupg
     vim
     which    
     zsh
-    extra-cmake-modules 
     weechat
     cmake
     dbus
-    sway
-    swaylock
-    swayidle
-    wl-clipboard
-    light
-    bemenu
-    i3status-rust
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -118,21 +106,11 @@
      layout = "us";
      xkbOptions = "ctrl:nocaps";
      libinput.enable = true;
- 		# displayManager.lightdm.enable = true;
- 		# windowManager.i3.enable = true;	
-     # displayManager.extraSessionFilePackages = [ sway ];
+     displayManager.sddm.enable = true;
+     desktopManager.default = "plasma5";
+     desktopManager.plasma5.enable = true;
    };
 	
-# 	services.compton = {
-# 		enable = true;
-# 	backend = "glx";
-# 		shadow = false;
-#     fade = false;
-# 		vSync = true;
-# 		
-# 	};
-programs.sway.enable = true;
-
   users = {     defaultUserShell = pkgs.zsh;  };
   users.users.phil = {
     isNormalUser = true;
