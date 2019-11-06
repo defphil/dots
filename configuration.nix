@@ -46,6 +46,7 @@
     openjdk11
     leiningen
     compton
+    ripgrep
     rxvt_unicode-with-plugins     
     wget
     vim
@@ -83,7 +84,17 @@
       ];
     };
   };
-  services.compton.enable=true;
+
+  systemd.user.services."compton" = {
+    enable = true;
+    description = "";
+    wantedBy = [ "default.target" ];
+    path = [ pkgs.compton ];
+    serviceConfig.Type = "forking";
+    serviceConfig.Restart = "always";
+    serviceConfig.RestartSec = 2;
+    serviceConfig.ExecStart = "${pkgs.compton}/bin/compton -b --config /home/phil/.config/compton.conf";
+  };
 
   hardware.opengl = {
     enable = true;
