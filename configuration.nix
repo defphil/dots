@@ -68,8 +68,10 @@
   services.xserver.layout = "us";
   services.xserver.xkbOptions = "ctrl:nocaps";
   services.xserver = {
-    autoRepeatDelay = 200;
-    autoRepeatInterval = 50;
+
+    displayManager.sessionCommands = ''
+      ${pkgs.xlibs.xset}/bin/xset r rate 200 50
+    '';
 
     desktopManager = {
       default = "none";
