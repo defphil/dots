@@ -2,7 +2,7 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [      
       ./hardware-configuration.nix
     ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -25,7 +25,9 @@
   ];
 
   networking.hostName = "freni"; # Define your hostname.
-  networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.wireless.iwd.enable = true;
+  
   networking.useDHCP = false;
   networking.interfaces.enp0s25.useDHCP = true;
   networking.interfaces.wlp3s0.useDHCP = true;
@@ -39,8 +41,12 @@
   time.timeZone = "Europe/Belgrade";
 
   environment.systemPackages = with pkgs; [
+    acpi
+    gnumake
+    gcc
     cargo
     firefox
+    fzf
     emacs
     git
     openjdk11
@@ -64,10 +70,12 @@
   sound.enable = true;
   hardware.pulseaudio.enable = true;
 
-  services.xserver.enable = true;
-  services.xserver.layout = "us";
-  services.xserver.xkbOptions = "ctrl:nocaps";
   services.xserver = {
+    enable = true;                 
+    autorun = false;
+    exportConfiguration = true;
+    layout = "us";
+    xkbOptions = "ctrl:nocaps";
 
     displayManager.sessionCommands = ''
       ${pkgs.xlibs.xset}/bin/xset r rate 200 50
@@ -77,7 +85,7 @@
       default = "none";
       xterm.enable = false; 
     };
-
+  
     windowManager.i3 = {
       enable = true;
       extraPackages = with pkgs; [
@@ -115,6 +123,6 @@
     extraGroups = [ "wheel" "audio" "video" "disk" ]; # Enable ‘sudo’ for the user.
   };
 
-  system.stateVersion = "19.09"; # Did you read the comment?
+  system.stateVersion = "19.09";
 }
 
