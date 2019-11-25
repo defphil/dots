@@ -8,9 +8,10 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   boot.kernelModules = [ "iwlwifi" ];
-  boot.extraModprobeConfig = ''
-      options iwlwifi bt_coex_active=0 power_save=Y 11n_disable=8 wd_disable=1 
-    '';
+ #  boot.extraModprobeConfig = ''
+ #      options iwlwifi bt_coex_active=0 power_save=Y 11n_disable=8 wd_disable=1 
+ #    '';
+
   nixpkgs.config.allowUnfree = true;
   hardware.enableRedistributableFirmware = true;
 
@@ -25,13 +26,13 @@
   ];
 
   networking.hostName = "freni"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.wireless.iwd.enable = true;
-  
   networking.useDHCP = false;
   networking.interfaces.enp0s25.useDHCP = true;
-  networking.interfaces.wlp3s0.useDHCP = true;
-
+  networking.interfaces.wlan0.useDHCP = true;
+  networking.firewall.enable = true;
+  powerManagement.enable = true;
+  services.upower.enable = true; 
   i18n = {
     consoleFont = "Lat2-Terminus16";
     consoleKeyMap = "us";
@@ -42,27 +43,37 @@
 
   environment.systemPackages = with pkgs; [
     acpi
+    acpid
     gnumake
     gcc
-    cargo
     firefox
+    dbus-glib
+    dbus
+    pkgconfig
+    rustup 
     fzf
     emacs
     git
     openjdk11
+    openssl
     leiningen
     compton
     ripgrep
-    rxvt_unicode-with-plugins     
+    rxvt_unicode-with-plugins
+    powertop
     wget
     vim
     which
     zsh
+    ly
+    tdesktop
   ];
 
   fonts.fonts = with pkgs; [
     terminus_font
     liberation_ttf
+    dejavu_fonts
+    profont
   ];
 
   programs.gnupg.agent = { enable = true; enableSSHSupport = true; };
@@ -77,10 +88,12 @@
     layout = "us";
     xkbOptions = "ctrl:nocaps";
 
-    displayManager.sessionCommands = ''
-      ${pkgs.xlibs.xset}/bin/xset r rate 200 50
-    '';
-
+    displayManager = {
+      sessionCommands = ''
+        ${pkgs.xlibs.xset}/bin/xset r rate 200 50
+      '';
+    };
+    
     desktopManager = {
       default = "none";
       xterm.enable = false; 
@@ -125,4 +138,3 @@
 
   system.stateVersion = "19.09";
 }
-
