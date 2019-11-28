@@ -2,37 +2,41 @@
 
 {
   imports =
-    [      
+    [
       ./hardware-configuration.nix
     ];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  boot.kernelModules = [ "iwlwifi" ];
- #  boot.extraModprobeConfig = ''
- #      options iwlwifi bt_coex_active=0 power_save=Y 11n_disable=8 wd_disable=1 
- #    '';
 
   nixpkgs.config.allowUnfree = true;
   hardware.enableRedistributableFirmware = true;
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.initrd.luks.devices = [
-    {
+  boot = {
+    kernelPackages = pkgs.linuxPackages_latest; 
+    kernelModules = [ "iwlwifi" ];
+
+    initrd.luks.devices = [{
       name = "root";
       device = "/dev/sda2";
       preLVM = true;
-    }
-  ];
+    }];
 
-  networking.hostName = "freni"; # Define your hostname.
-  networking.wireless.iwd.enable = true;
-  networking.useDHCP = false;
-  networking.interfaces.enp0s25.useDHCP = true;
-  networking.interfaces.wlan0.useDHCP = true;
-  networking.firewall.enable = true;
-  powerManagement.enable = true;
-  services.upower.enable = true; 
+    loader.systemd-boot.enable = true;
+    loader.efi.canTouchEfiVariables = true;
+  };
+
+  networking = { 
+    hostName = "nixos";
+    wireless.iwd.enable = true;
+
+    firewall.enable = true;
+    useDHCP = false;
+    interfaces.enp0s25.useDHCP = true;
+    interfaces.wlan0.useDHCP = true;
+
+    # Configure network proxy if necessary
+    # networking.proxy.default = "http://user:password@proxy:port/";
+    # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  };
+
   i18n = {
     consoleFont = "Lat2-Terminus16";
     consoleKeyMap = "us";
@@ -42,63 +46,76 @@
   time.timeZone = "Europe/Belgrade";
 
   environment.systemPackages = with pkgs; [
+    # dev, tools
+    cargo
+    clang
+    git
+    gcc
+    gdb
+    gnumake
+    fzf
+    llvm
+    lldb
+    openjdk11
+    leiningen
+    rustc
+    ripgrep
+    rr
+    valgrind
+    
+
+    # system
     acpi
     acpid
-    gnumake
-    gcc
-    firefox
-    dbus-glib
-    dbus
-    pkgconfig
-    rustup 
-    fzf
-    emacs
-    git
-    openjdk11
-    openssl
-    leiningen
     compton
-    ripgrep
-    rxvt_unicode-with-plugins
     powertop
-    wget
+
+    # apps
+    feh    
+    emacs
+    firefox
+    tdesktop
+    rxvt_unicode-with-plugins
     vim
     which
-    zsh
-    ly
-    tdesktop
+    wget
   ];
 
   fonts.fonts = with pkgs; [
     terminus_font
     liberation_ttf
     dejavu_fonts
-    profont
+    noto-fonts
   ];
 
   programs.gnupg.agent = { enable = true; enableSSHSupport = true; };
+
+  # services.openssh.enable = true;
+  # services.upower.enable = true;
   services.printing.enable = true;
+  powerManagement.enable = true;
+  powerManagement.powertop.enable = true;
   sound.enable = true;
   hardware.pulseaudio.enable = true;
 
   services.xserver = {
-    enable = true;                 
+    enable = true;
     autorun = false;
-    exportConfiguration = true;
     layout = "us";
     xkbOptions = "ctrl:nocaps";
+    libinput.enable = true;
 
     displayManager = {
       sessionCommands = ''
         ${pkgs.xlibs.xset}/bin/xset r rate 200 50
       '';
     };
-    
+
     desktopManager = {
       default = "none";
-      xterm.enable = false; 
+      xterm.enable = false;
     };
-  
+
     windowManager.i3 = {
       enable = true;
       extraPackages = with pkgs; [
@@ -106,30 +123,26 @@
         i3status-rust
       ];
     };
+
+
+    
+  };
+
+  location.provider = "geoclue2";
+  services.redshift = {
+    enable = true;
   };
 
   systemd.user.services."compton" = {
     enable = true;
     description = "";
     wantedBy = [ "default.target" ];
-    path = [ pkgs.compton ];
+    path = [pkgs.compton];
     serviceConfig.Type = "forking";
     serviceConfig.Restart = "always";
     serviceConfig.RestartSec = 2;
     serviceConfig.ExecStart = "${pkgs.compton}/bin/compton -b --config /home/phil/.config/compton.conf";
   };
-
-  hardware.opengl = {
-    enable = true;
-    extraPackages = with pkgs; [
-      vaapiIntel
-      vaapiVdpau
-      libvdpau-va-gl
-      intel-media-driver # only available starting nixos-19.03 or the current nixos-unstable
-    ];
-  };
-
-  services.xserver.libinput.enable = true;
 
   users.users.phil = {
     isNormalUser = true;
@@ -138,3 +151,4 @@
 
   system.stateVersion = "19.09";
 }
+
