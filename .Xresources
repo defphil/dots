@@ -1,6 +1,11 @@
-xterm*background: black
-xterm*foreground: lightgray
-xterm*cursorColor: #ff0066
-xterm*faceName: ctrlD
-xterm*faceSize: 12
-xterm*geometry: 120x55
+URxvt*background: black
+URxvt*foreground: lightgray
+URxvt*cursorColor: #ff0066
+URxvt*font:xft:DejaVu Sans Mono-12
+URxvt*geometry: 120x50
+
+Xft.dpi:        96
+Xft.antialias:  true
+Xft.rgba:       rgb
+Xft.hinting:    true
+Xft.hintstyle:  hintfull
