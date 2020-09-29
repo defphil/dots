@@ -1,34 +1,35 @@
-;;; package --- Summary
-;;; Commentary:
-;;; Code:
+;; -*- lexical-binding: t; -*-
+
 (require 'package)
+(setq package-enable-at-startup nil)
+(setq package-archives
+      '(("elpa" . "https://elpa.gnu.org/packages/")
+        ("melpa" . "http://melpa.org/packages/")))
 
 (package-initialize)
-(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (when (not package-archive-contents)
   (package-refresh-contents))
 
-(eval-when-compile
-  (require 'use-package))
-
-
+(unless (package-installed-p 'use-package)
+  (warn "use-package is not installed, trying to install")
+  (package-install 'use-package))
+(require 'use-package)
 (defalias 'display-startup-echo-area-message #'ignore)
 (defalias 'yes-or-no-p 'y-or-n-p)
+
+;; UTF-8 everywhere for everything
 (set-language-environment "UTF-8")
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
-
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (setq use-package-always-ensure t)
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
-(setq-default cursor-type 'box)
-;; -------------------------------------------------------------
+
 (transient-mark-mode 1)
 (tool-bar-mode       0)
 (menu-bar-mode       0)
@@ -37,14 +38,15 @@
 (line-number-mode    1)
 (column-number-mode  1)
 (blink-cursor-mode   1)
-
 (setq-default indent-tabs-mode nil
               tab-width 4
-              require-final-nrewline t
+              require-final-newline t
+              cursor-type 'box
               indicate-buffer-boundaries '((top . right)
                                            (bottom . right)
                                            (t . nil)))
-
+(setq-default tab-width 4)
+(global-auto-revert-mode 1)
 (setq mouse-autoselect-window nil
       focus-follows-mouse nil
       load-prefer-newer t
@@ -55,29 +57,26 @@
       inhibit-startup-message t
       inhibit-startup-buffer-menu t
       inhibit-startup-screen t
-      ;;inhibit-startup-hooks t
       mouse-wheel-scroll-amount '(1 ((shift) .1))
       mouse-wheel-progressive-speed nil
       scroll-step 1
       scroll-conservatively 100000
-      scroll-margin 10
+      scroll-margin 1
       fringes-outside-margins 1
       make-backup-files nil
       auto-save-default nil
       create-lockfiles nil
       frame-resize-pixelwise t
+      frame-inhibit-implied-resize t
+      initial-major-mode 'fundamental-mode
       make-backup-files nil
       create-lockfiles nil
-      frame-title-format (list "emacs - %f")
-      gc-cons-threshold (* 50 1000 1000)
+      frame-title-format (list "%b")
+      read-process-output-max (* 1024 1024)
+      gc-cons-threshold 100000000
       blink-cursor-blinks 7
       window-combination-resize t
-      ;; dont't select text with shift, use ctrL+space
       shift-select-mode nil)
-
-(setq initial-frame-alist
-      '((width . 120)
-        (height . 55)))
 
 (defvar newline-and-indent t)
 (defun open-previous-line (arg)
@@ -85,27 +84,68 @@
   (interactive "p")
   (beginning-of-line)
   (open-line arg)
-
   (when newline-and-indent
     (indent-according-to-mode)))
 (global-set-key (kbd "M-o") 'open-previous-line)
+;; keyboard escape quit on third ESC press annoys the hell out of me
+;;(global-unset-key (kbd "ESC ESC ESC"))
 
+(require 'server)
+(or (server-running-p)
+     (server-start))
 
-(defun my-scroll-hook()
-  "Increase gc-threshold before scroll and set it back after."
-  (setq gc-cons-threshold most-positive-fixnum)
-  (run-with-idle-timer 3 nil (lambda () (setq gc-cons-threshold (* 8 1024 1024)))))
-(advice-add 'scroll-up-line :before 'my-scroll-hook)
-(advice-add 'scroll-down-line :before 'my-scroll-hook)
-;;(setq line-spacing 1)
-(set-frame-font "Cascadia Code-11")
+;; -----------------------------------------------------------------------------
+;; fonts & aesthetics
+(add-hook 'c++-mode-hook #'modern-c++-font-lock-mode)
 
-(load-theme '4coder t)
+(if (eq system-type 'windows-nt)
+    (set-frame-font "Consolas-10.5")
+  (if (eq system-type 'gnu)
+      (set-frame-font "DejaVu Sans Mono-12")))
 
+(defun disable-all-themes ()
+  (dolist (i custom-enabled-themes)
+    (disable-theme i)))
 
-;; -------------------------------------------------------
+(defadvice load-theme (before disable-themes-first activate)
+  (disable-all-themes))
+
+(load-theme 'alabaster t)
+
+(defun maximize-frame ()
+  "Maximize the current frame"
+  (interactive)
+  (w32-send-sys-command 61488))
+
+(defun post-load-stuff ()
+  (interactive)
+  (maximize-frame)
+  (set-cursor-color "#ff0048")
+  )
+(add-hook 'window-setup-hook 'post-load-stuff t)
+
+;; nicer keybindings for I-search
+(global-set-key [(control s)] 'isearch-forward-regexp)
+(global-set-key [(control r)] 'isearch-backward-regexp)
+(global-set-key [(meta %)] 'query-replace-regexp)
+(global-set-key [(control o)] 'other-window)
+
+;; -----------------------------------------------------------------------------
+
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
+
+(use-package ace-window
+  :commands ace-window
+  :init (bind-key "C-x o" 'ace-window)
+  :config (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+
+(use-package undo-tree
+  :bind ("C-x C-u" . undo-tree-mode))
+
+(global-set-key (kbd "C-z") 'undo)
+
+(use-package rainbow-mode)
 
 (use-package paredit
   :diminish paredit-mode
@@ -122,6 +162,9 @@
                eval-expression-minibuffer-setup-hook))
     (add-hook m #'paredit-mode)))
 
+(setq lazy-highlight-initial-delay 0)
+(setq search-default-mode 'char-fold-to-regexp)
+
 (use-package highlight-numbers
   :config
   (add-hook 'prog-mode-hook 'highlight-numbers-mode))
@@ -135,6 +178,7 @@
                racket-repl-mode-hook
                scheme-mode-hook
                lisp-mode-hook
+               c++-mode-hook
                eval-expression-minibuffer-setup-hook))
     (add-hook m #'rainbow-delimiters-mode)))
 
@@ -143,80 +187,33 @@
   :diminish which-key-mode
   :config (which-key-mode))
 
-(use-package hl-todo
+;; Replaced ivy/counsel/swiper combo with selectrum and prescient
+(use-package selectrum
   :ensure t
-  :config (dolist (m '(c-mode-hook
-                       c++-mode-hook
-                       scheme-mode-hook
-                       clojure-mode-hook
-                       lisp-mode-hook))
-            (add-hook m #'hl-todo-mode)))
+  :diminish
+  :commands selectrum-mode
+  :config (setq selectrum-num-candidates-displayed 5))
 
-(use-package company
-  :defer 1
-  :diminish company-mode
-  :init
-  (add-hook 'after-init-hook 'global-company-mode)
-  (add-hook 'after-init-hook (lambda ()
-                               (company-mode -1)))
-  :config
-  (setq company-auto-complete nil
-        company-idle-delay .3
-        company-show-numbers t
-        company-echo-delay 0
-        company-tooltip-flip-when-above t
-        company-minimum-prefix-length 2
-        company-tooltip-limit 12))
+(use-package prescient
+  :ensure t
+  :diminish)
 
+(use-package selectrum-prescient
+  :ensure t
+  :after prescient
+  :commands selectrum-prescient-mode
+  :init (selectrum-prescient-mode +1)
+         (prescient-persist-mode +1))
 
-(use-package ivy
-  :init (add-hook 'after-init-hook #'ivy-mode)
-  :diminish (ivy-mode)
-  :config
-  (setq ivy-height 8
-        ivy-wrap t
-        ivy-display-style 'fancy
-        ivy-fixed-height-minibuffer t
-        ivy-use-virtual-buffers t
-        enable-recursive-minibuffers t
-        ivy-re-builders-alist '((counsel-M-x . ivy--regex-ignore-order)
-                                (t . ivy--regex-plus)))
-  (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-immediate-done)
-  (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done))
-;; Making presets of buffers and panes, simple stack configuration
-;; works really, really good, saves state as `virtual` buffer
-(global-set-key (kbd "C-c v") 'ivy-push-view)
-(global-set-key (kbd "C-c V") 'ivy-pop-view)
+(use-package diminish
+  :ensure t)
 
-(use-package ivy-rich
-  :after ivy
-  :init (ivy-rich-mode 1)
-  :config (setq ivy-virtual-abbreviate 'full
-                ivy-rich-path-style 'abbrev))
-
-;; Have different height for find-file and M-x menus
-
-(use-package swiper
-  :bind (("C-s"     . swiper)
-         ("C-r"     . swiper)
-         ("C-c u"   . swiper-all)
-         ("C-c C-r" . ivy-resume)
-         ("C-c C-o" . ivy-occur))
-  :config (setq swiper-include-line-number-in-search t))
-
-(use-package smex
-  :config (smex-initialize))
-
-(use-package counsel
-  :bind (("M-x"     . counsel-M-x)
-         ("C-x C-f" . counsel-find-file)
-         ("C-h f"   . counsel-describe-function)
-         ("C-h v"   . counsel-describe-variable)
-         ("C-c C-s" . counsel-rg)
-         ("M-y"     . counsel-yank-pop)))
+;; (use-package smex
+;;   :config (smex-initialize))
 
 (use-package dumb-jump
   :after prog-mode
+  :custom ((dumb-jump-force-searcher 'rg))
   :config
   (setq dumb-jump-aggressive t)
   :bind (:map prog-mode-map
@@ -235,41 +232,87 @@
   :bind ("C-x p" . projectile-command-map))
 
 (use-package flycheck
-  :init (global-flycheck-mode))
+  :ensure t
+  :custom (flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
-(use-package yasnippet
-  :disabled t
+(use-package flycheck-clang-tidy
+  :after flycheck
+  :config (setq flycheck-clang-tidy-executable "C:\\Program Files\\LLVM\\bin\\clang-tidy.exe")
+  :hook (flycheck-mode . flycheck-clang-tidy-setup))
+
+(add-hook 'before-save-hook
+          (lambda ()
+            (when (member major-mode '(c-mode c++-mode glsl-mode))
+              (progn
+                (when (locate-dominating-file "." ".clang-format")
+                  (clang-format-buffer))
+                ;; Return nil, to continue saving.
+                nil))))
+
+(setq hippie-expand-try-functions-list '(try-expand-dabbrev-visible
+			                             try-expand-dabbrev
+			                             try-expand-dabbrev-all-buffers
+			                             try-expand-dabbrev-from-kill
+			                             try-complete-file-name
+			                             try-complete-file-name-partially))
+(global-set-key (kbd "M-/") 'hippie-expand )
+
+(use-package magit
   :defer t
-  :diminish yas-minor-mode
-  :bind (("C-c C-c" . yas-insert-snippet))
-  :config (yas-reload-all)
-  (add-hook 'prog-mode-hook #'yas-minor-mode))
+  :bind ("C-x g" . magit-status)
+  :custom ((magit-diff-refine-hunk t)))
 
-(use-package ace-window
-  :commands ace-window
-  :init (bind-key "C-x o" 'ace-window)
-  :config (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
-
-;; Use Google's style for both C and C++
-(use-package google-c-style
-  :ensure t)
 (defun my-c-mode-common-hook ()
-  "My C Mode Common Hook that force 2 spaces indent with google's style."
-  (c-set-style "google")
+  "My C Mode Common Hook that force 2 spaces indent with Google's style"
+  (c-set-style "bsd")
   (electric-pair-mode)
-  (setq tab-width 2)
-  (setq c-basic-offset tab-width)
+  (setq-default tab-width 4)
+  (setq c-basic-offset 4)
   (setq indent-tabs-mode nil))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 (add-hook 'c++-mode-common-hook 'my-c-mode-common-hook)
 
+(defmacro setl (sym val)
+  "Produce a lambda expression that locally sets a value"
+  `(function (lambda () (setq-local ,sym ,val))))
 
+(use-package semantic
+  :config
+  (add-hook 'semantic-mode-hook
+			(setl completion-at-point-functions '(semantic-analyze-completion-at-point-function)))
+  (setq semantic-default-submodes
+		'(global-semantic-idle-scheduler-mode
+		  global-semantic-idle-summary-mode
+		  global-semanticdb-minor-mode
+		  global-semantic-stickyfunc-mode)))
 
+(use-package editorconfig
+  :defer t
+  :config (editorconfig-mode t))
+
+(setq org-indent-indentation-per-level 1)
+(setq org-hide-leading-stars 't)
+(setq org-hide-emphasis-markers t)
+(customize-set-variable 'org-blank-before-new-entry 
+                        '((heading . nil)
+                          (plain-list-item . nil)))
+(setq org-cycle-separator-lines 1)
+
+;; (if (eq system-type 'gnu)
+;;     (defun screenshot-svg ()
+;;       "Save a screenshot of the current frame as an SVG image.
+;;        Saves to a temp file and puts the filename in the kill ring.
+;;        Works only on Linux."
+;;       (interactive)
+;;       (let* ((filename (make-temp-file "Emacs" nil ".svg"))
+;;              (data (x-export-frames nil 'svg)))
+;;         (with-temp-file filename
+;;           (insert data))
+;;         (kill-new filename)
+;;         (message filename))))
 ;; -----------------------------------------------------------------------------
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars noruntime)
 ;; fill-column: 80
 ;; End:
-
-(provide 'init.el)
 ;;; init.el ends here
