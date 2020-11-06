@@ -1,5 +1,4 @@
 {
-	"_comment": "neovintageous is mandatory as vim keybinding layer",
 	"font_options":
 	[
 		"no_italic"
@@ -9,7 +8,6 @@
 	[
 		"Six",
 		"Vintage",
-		"Vintageous",
 	],
 
 	"line_padding_top": 1,
@@ -17,7 +15,7 @@
 	"caret_style": "blink",
 	"block_caret": false,
 	"highlight_line": true,
-	"color_scheme": "Packages/User/Themes/Monokai Classic.sublime-color-scheme",
+	"color_scheme": "Packages/User/Themes/Naysay.sublime-color-scheme",
 	"theme": "Adaptive.sublime-theme",
 	"neovintageous_build_version": 11100,
 	"vintageous_use_ctrl_keys": null,

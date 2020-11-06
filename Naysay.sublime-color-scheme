@@ -1,0 +1,120 @@
+{
+    "name": "Naysay",
+    "author": "Filip Miletic",
+    "variables":
+    {
+        "fg": "#B6A997",
+        "active": "#FF0086"
+    },
+    "globals":
+    {
+        "foreground":                  "var(fg)",
+        "background":                  "#1a1a1a",
+        "caret":                       "var(active)",
+        "line_highlight":              "#ffffff0a",
+        "misspelling":                 "#f00",
+        "selection":                   "#00000ff",
+        "selection_border_width":      "0",
+        "selection_corner_radius":     "1",
+        "highlight":                   "var(active)",
+        "find_highlight_foreground":   "#000",
+        "find_highlight":              "var(active)",
+        "brackets_options":            "foreground",
+        "brackets_foreground":         "var(active)",
+        "bracket_contents_options":    "foreground",
+        "bracket_contents_foreground": "var(active)",
+        "tags_options":                "foreground",
+        "tags_foreground":             "var(active)",
+    },
+    "rules":
+    [
+        {"name":       "Comments",
+         "scope":      "comment, punctuation.definition.comment, invalid comment",
+         "foreground": "#67DD5D"},
+
+        {"name":       "Strings",
+         "scope":      "string",
+         "foreground": "#62d0c8"},
+        
+        {"name":       "Escapes \n",
+         "scope":      "constant.character.escape, constant.other.placeholder",
+         "background": "#ffffff10"},
+
+        {"name":       "Constants",
+         "scope":      "constant, punctuation.definition.constant",
+         "foreground": "#89E2A1"},
+
+        {"name":       "Definitions",
+         "scope":      "entity.name, entity.name.tag",
+         "foreground": "#FFFFFF"},
+
+        {"name":       "Keyword",
+         "scope":      "keyword, keyword.operator",
+         "foreground": "#FFFBD9"},
+
+        {"name":       "Storage type",
+         "scope":      "storage.type",
+         "foreground": "#89E2A1"},
+
+        {"name":       "Storage",
+         "scope":      "storage",
+         "foreground": "#89E2A1"},
+
+        { "name": "Library type", "scope": "support.type, entity.name.type.object.console", "foreground": "#89E2A1" },
+        { "name": "Support variables", "scope": "support.variable", "foreground": "#FFFBD9" },
+        { "name": "Library type property", "scope": "support.type.property-name", "font_style": "normal", "foreground": "#89E2A1" },
+        { "name": "Library class", "scope": "support.class", "foreground": "#89E2A1" },
+
+        {"name":       "Variable language",
+         "scope":      "variable.language",
+         "foreground": "#FFFBD9"},
+
+        {"name":       "Entity name",
+         "scope":      "entity.name",
+         "foreground": "#CCE8D3"},
+
+        {"name":       "Tag name",
+         "scope":      "entity.name.tag",
+         "foreground": "#CCE8D3"},
+
+        { "name": "Variable", 
+          "scope": "variable, variable.other",
+          "foreground": "var(fg)" },
+
+        { "name": "Function arguments",
+          "scope": "variable.parameter, variable.function",
+          "foreground": "var(fg)" },
+
+        {"name":       "Inherited class",
+         "scope":      "entity.other.inherited-class",
+         "foreground": "#89E2A1"},
+
+        {"name":       "Punctuation",
+         "scope":      "punctuation - punctuation.section, keyword.operator, string punctuation.section",
+         "foreground": "#708B8D"},
+
+        {"name":       "Inner brackets",
+         "scope":      "meta.parens meta.parens punctuation.section, meta.parens meta.brackets punctuation.section, meta.parens meta.braces punctuation.section, meta.brackets meta.parens punctuation.section, meta.brackets meta.brackets punctuation.section, meta.brackets meta.braces punctuation.section, meta.braces meta.parens punctuation.section, meta.braces meta.brackets punctuation.section, meta.braces meta.braces punctuation.section",
+         "foreground": "color(var(fg) alpha(0.4))"},
+
+        {"name":       "Mistakes",
+         "scope":      "invalid, invalid string, invalid constant, invalid entity.name, invalid punctuation, invalid source.symbol",
+         "foreground": "#c33",
+         "background": "#2B1D1E"},
+         
+        {"scope": "markup.inserted",
+         "foreground": "hsl(100, 50%, 50%)"},
+
+        {"scope": "markup.deleted",
+         "foreground": "hsl(2, 65%, 50%)"},
+         
+        {"scope": "markup.changed",
+         "foreground": "hsl(30, 85%, 50%)"},
+
+        {"scope": "markup.ignored",
+         "foreground": "#aaa"},
+
+        {"scope": "markup.untracked",
+         "foreground": "#aaa"}
+    ]
+}
