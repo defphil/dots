@@ -1,10 +1,5 @@
 ;;; -*- lexical-binding: t -*-
-;; Most important packages:
-;; - ripgrep w/ deadgrep          }
-;; - fd w/ find-file-in-project   } both require cargo(rust)
-;; - paredit
-;; - selectrum w/ prescient
-;; - transient
+;; Configured for use with ripgrep and fd
 (require 'package)
 (setq package-enable-at-startup nil)
 (setq package-archives
@@ -89,9 +84,7 @@
 ;; -----------------------------------------------------------------------------
 ;; fonts & aesthetics
 (if (eq system-type 'windows-nt)
-    (set-frame-font "Consolas-10.5")
-  (if (eq system-type 'gnu)
-      (set-frame-font "DejaVu Sans Mono-12")))
+    (set-frame-font "Consolas-10.5"))
 
 (defun disable-all-themes ()
   (dolist (i custom-enabled-themes)
@@ -131,31 +124,19 @@
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 (add-hook 'c++-mode-common-hook 'my-c-mode-common-hook)
 
-(autoload 'dired-jump "dired-x"
-  "C-x C-j
-Jump to Dired buffer corresponding to current buffer." t)
-(autoload 'dired-jump-other-window "dired-x"
-  "C-x 4 C-J
-Like \\[dired-jump] (dired-jump) but in other window." t)
-
 (defun recentf-open-files+ ()
   "Use `completing-read' to open a recent file."
   (interactive)
   (let ((files (mapcar 'abbreviate-file-name recentf-list)))
     (find-file (completing-read "Find recent file: " files nil t))))
 (bind-key* (kbd "C-c C-b") #'recentf-open-files+)
+
 (global-set-key [(control s)] 'isearch-forward-regexp)
 (global-set-key [(control r)] 'isearch-backward-regexp)
 (global-set-key [(meta %)] 'query-replace-regexp)
 (global-set-key [(control o)] 'other-window)
 (global-set-key (kbd "C-z") 'undo)
 ;; -----------------------------------------------------------------------------
-
-(use-package ace-window
-  :commands ace-window
-  :init (bind-key "C-x o" 'ace-window)
-  :config (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
-
 (use-package undo-tree
   :bind ("C-x C-u" . undo-tree-mode))
 
@@ -190,23 +171,6 @@ Like \\[dired-jump] (dired-jump) but in other window." t)
                c++-mode-hook
                eval-expression-minibuffer-setup-hook))
     (add-hook m #'rainbow-delimiters-mode)))
-
-(use-package selectrum
-  :ensure t
-  :diminish
-  :commands selectrum-mode
-  :config (setq selectrum-num-candidates-displayed 5))
-
-(use-package prescient
-  :ensure t
-  :diminish)
-
-(use-package selectrum-prescient
-  :ensure t
-  :after prescient
-  :commands selectrum-prescient-mode
-  :init (selectrum-prescient-mode +1)
-  (prescient-persist-mode +1))
 
 (use-package diminish
   :ensure t)
