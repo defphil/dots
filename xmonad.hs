@@ -46,5 +46,10 @@ main = do
       [ ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
       , ((0, xK_Print), spawn "scrot")
       , ((mod4Mask, xK_z), spawn "i3lock -i /home/phil/Pictures/wp.png")
-      ,  ((mod4Mask, xK_p), spawn "dmenu_run -nb black -fn 'Terminus-9'") 
+      , ((mod4Mask, xK_p), spawn "dmenu_run -nb black -fn 'Terminus-9'")
+      , ((0                     , 0x1008FF11), spawn "amixer -q sset Master 2%-")
+      , ((0                     , 0x1008FF13), spawn "amixer -q sset Master 2%+")
+      , ((0                     , 0x1008FF12), spawn "amixer set Master toggle")
+      , ((0 , 0x1008FF02), spawn "lux -a 20%")
+      , ((0 , 0x1008FF03), spawn "lux -s 20%")
       ]
