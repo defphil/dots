@@ -45,5 +45,6 @@ main = do
       } `additionalKeys`
       [ ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
       , ((0, xK_Print), spawn "scrot")
+      , ((mod4Mask, xK_z), spawn "i3lock -i /home/phil/Pictures/wp.png")
       ,  ((mod4Mask, xK_p), spawn "dmenu_run -nb black -fn 'Terminus-9'") 
       ]
