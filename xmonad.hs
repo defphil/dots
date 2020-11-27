@@ -15,6 +15,9 @@ main = do
                         , ppTitle = xmobarColor "green" "" . shorten 50
                         }
         , modMask = mod4Mask
+        , normalBorderColor = "#202020"
+        , focusedBorderColor = "#008080"
+        , borderWidth = 1
         } `additionalKeys`
         [ ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
         , ((0, xK_Print), spawn "scrot")
