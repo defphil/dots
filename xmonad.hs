@@ -20,7 +20,7 @@ myTabConfig =
 
 myLayoutHook =
   smartBorders . avoidStruts $ -- layouts begin below
-  tiled ||| noBorders Full ||| tabbed shrinkText (theme wfarrTheme)
+  tiled ||| noBorders Full ||| tabbed shrinkText (theme robertTheme)
   where
     tiled = Tall nmaster delta ratio
     nmaster = 1
