@@ -25,10 +25,13 @@
 (set-keyboard-coding-system 'utf-8)
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+
 (setq use-package-always-ensure t)
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
-
+(setq default-directory "~/.emacs.d/")
 (transient-mark-mode 1)
 (tool-bar-mode       0)
 (menu-bar-mode       0)
@@ -84,7 +87,7 @@
 ;; -----------------------------------------------------------------------------
 ;; fonts & aesthetics
 (if (eq system-type 'windows-nt)
-    (set-frame-font "Consolas-10.5"))
+    (set-frame-font "Consolas-11"))
 
 (defun disable-all-themes ()
   (dolist (i custom-enabled-themes)
@@ -137,6 +140,11 @@
 (global-set-key [(control o)] 'other-window)
 (global-set-key (kbd "C-z") 'undo)
 ;; -----------------------------------------------------------------------------
+(use-package smex
+  :init (smex-initialize))
+  (global-set-key (kbd "M-x") 'smex)
+  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+
 (use-package undo-tree
   :bind ("C-x C-u" . undo-tree-mode))
 
@@ -205,6 +213,23 @@
   :ensure t
   :config (setq ffip-use-rust-fd t)
   (bind-key* (kbd "C-c C-f") #'find-file-in-project-by-selected))
+
+(use-package projectile
+  :ensure t
+  :diminish projectile-mode
+  :bind
+  (("C-c p f" . projectile-ripgrep)
+   ("C-c p s" . projectile-save-project-buffers))
+  :config
+  (projectile-mode +1))
+
+(require 'qgrep)
+(require 'color-rg)
+(define-key isearch-mode-map (kbd "M-s M-s") 'isearch-toggle-color-rg)
+
+(use-package rust-mode)
+(use-package lua-mode)
+(use-package glsl-mode)
 ;; -----------------------------------------------------------------------------
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars noruntime)
