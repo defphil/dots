@@ -1,15 +1,18 @@
 {
 	"font_options":
 	[
-		"no_italic"
+		"no_italic",
 	],
-	"font_size": 10.5,
+	"font_face": "Consolas",
+	"font_size": 11,
 	"ignored_packages":
 	[
-		"Six",
 		"Vintage",
+		"Rust",
 	],
-
+	"caret_extra_top": 1,
+	"caret_extra_bottom": 1,
+	"caret_extra_width": 2,
 	"line_padding_top": 1,
 	"line_padding_bottom": 1,
 	"caret_style": "blink",
@@ -17,7 +20,10 @@
 	"highlight_line": true,
 	"color_scheme": "Packages/User/Themes/Naysay.sublime-color-scheme",
 	"theme": "Adaptive.sublime-theme",
-	"neovintageous_build_version": 11100,
-	"vintageous_use_ctrl_keys": null,
-	"vintageous_use_super_keys": null,
+	"block_caret_corner_style": "square",
+	"line_numbers": true,
+	"fold_buttons": false,
+	"gutter": true,
+	"auto_complete": false,
+//	"hardware_acceleration": "opengl"
 }

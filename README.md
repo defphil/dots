@@ -1,10 +1,7 @@
 # dots
 
-![subl](sc.png)
-
-
-
 Configuration for:
-- Various linux related stuff
-- Emacs on Windows
-- Sublime Text
+- Various Linux shenanigans
+- Pure Gtk gccEmacs config for Linux and Win
+- Sublime Text config for Win
+- Xmonad
