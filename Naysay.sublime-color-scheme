@@ -9,7 +9,7 @@
     "globals":
     {
         "foreground":                  "var(fg)",
-        "background":                  "#1a1a1a",
+        "background":                  "#121519",
         "caret":                       "var(active)",
         "line_highlight":              "#ffffff0a",
         "misspelling":                 "#f00",
