@@ -3,7 +3,7 @@
     "author": "Filip Miletic",
     "variables":
     {
-        "fg": "#90B080",
+        "fg": "#90A070",
         "active": "#FF0086"
     },
     "globals":
@@ -42,7 +42,7 @@
 
         {"name":       "Constants",
          "scope":      "constant, punctuation.definition.constant",
-         "foreground": "#50FF30"},
+         "foreground": "#F379F3"},
 
         {"name":       "Definitions",
          "scope":      "entity.name, entity.name.tag",
@@ -60,9 +60,9 @@
          "scope":      "storage",
          "foreground": "#00BDf3"},
 
-        { "name": "Library type", "scope": "support.type, entity.name.type.object.console", "foreground": "#89E2A1" },
-        { "name": "Support variables", "scope": "support.variable", "foreground": "#FFFBD9" },
-        { "name": "Library type property", "scope": "support.type.property-name", "font_style": "normal", "foreground": "#89E2A1" },
+        { "name": "Library type", "scope": "support.type, entity.name.type.object.console", "foreground": "#00BDf3" },
+        { "name": "Support variables", "scope": "support.variable", "foreground": "#00BDf3" },
+        { "name": "Library type property", "scope": "support.type.property-name", "font_style": "normal", "foreground": "#00BDf3" },
         { "name": "Library class", "scope": "support.class", "foreground": "#89E2A1" },
 
         {"name":       "Variable language",
@@ -91,7 +91,7 @@
 
         {"name":       "Punctuation",
          "scope":      "keyword.operator ",
-         "foreground": "#F379F3"},
+         "foreground": "#BD63C5"},
 
         {"name":       "Inner brackets",
          "scope":      "meta.parens meta.parens punctuation.section, meta.parens meta.brackets punctuation.section, meta.parens meta.braces punctuation.section, meta.brackets meta.parens punctuation.section, meta.brackets meta.brackets punctuation.section, meta.brackets meta.braces punctuation.section, meta.braces meta.parens punctuation.section, meta.braces meta.brackets punctuation.section, meta.braces meta.braces punctuation.section",
